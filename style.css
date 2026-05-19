@@ -1,0 +1,398 @@
+/* ===================== 获取页面元素 ===================== */
+
+const pageAwake = document.getElementById("pageAwake");
+const pagePain = document.getElementById("pagePain");
+const pageCleanse = document.getElementById("pageCleanse");
+const pageResult = document.getElementById("pageResult");
+const pageConvert = document.getElementById("pageConvert");
+
+const openBtn = document.getElementById("openBtn");
+const painCarousel = document.getElementById("painCarousel");
+const painNextBtn = document.getElementById("painNextBtn");
+
+const scratchCanvas = document.getElementById("scratchCanvas");
+const scratchStage = document.getElementById("scratchStage");
+const scratchGuide = document.getElementById("scratchGuide");
+const cleanNextBtn = document.getElementById("cleanNextBtn");
+
+const tarotCard = document.getElementById("tarotCard");
+const resultName = document.getElementById("resultName");
+const resultDesc = document.getElementById("resultDesc");
+const keywordOrbit = document.getElementById("keywordOrbit");
+
+const retestBtn = document.getElementById("retestBtn");
+const toConvertBtn = document.getElementById("toConvertBtn");
+const couponBtn = document.getElementById("couponBtn");
+const groupBtn = document.getElementById("groupBtn");
+const backStartBtn = document.getElementById("backStartBtn");
+
+
+/* ===================== 页面切换 ===================== */
+
+function showPage(targetPage) {
+  const pages = [pageAwake, pagePain, pageCleanse, pageResult, pageConvert];
+
+  pages.forEach((page) => {
+    page.classList.remove("active");
+  });
+
+  targetPage.classList.add("active");
+}
+
+
+/* ===================== 第二页：气味困扰卡片数据 ===================== */
+
+const painScenes = [
+  {
+    id: "sweat",
+    index: "01",
+    title: "运动暴汗",
+    desc: "体育课、健身、球场之后，最怕衣服还停留在上一秒的汗味里。",
+    tag: "汗味退场，青草登场",
+    resultType: "grass"
+  },
+  {
+    id: "dorm",
+    index: "02",
+    title: "宿舍混味",
+    desc: "小小宿舍里，潮味、洗衣机残留味、衣柜味混在一起，很难拥有清爽感。",
+    tag: "宿舍很小，也可以有一座花园",
+    resultType: "magnolia"
+  },
+  {
+    id: "mildew",
+    index: "03",
+    title: "换季霉味",
+    desc: "衣服明明洗过，但从柜子里拿出来时，总有一层旧旧的闷味。",
+    tag: "再打开衣柜，春天还在",
+    resultType: "orchid"
+  },
+  {
+    id: "hotpot",
+    index: "04",
+    title: "聚餐残味",
+    desc: "火锅、烧烤和夜宵之后，衣服比朋友圈更早暴露你的行程。",
+    tag: "不是掩盖异味，而是让清新重新出现",
+    resultType: "sandalwood"
+  }
+];
+
+let selectedScene = null;
+let selectedResultType = "grass";
+
+
+function renderPainCards() {
+  painCarousel.innerHTML = "";
+
+  painScenes.forEach((scene) => {
+    const card = document.createElement("button");
+    card.className = `pain-card ${scene.id}`;
+    card.dataset.id = scene.id;
+
+    card.innerHTML = `
+      <div class="pain-card-content">
+        <p class="pain-index">SCENE ${scene.index}</p>
+        <h3 class="pain-title">${scene.title}</h3>
+        <p class="pain-desc">${scene.desc}</p>
+        <span class="pain-tag">${scene.tag}</span>
+      </div>
+      <div class="card-scene-visual"></div>
+    `;
+
+    card.addEventListener("click", () => {
+      selectPainScene(scene);
+    });
+
+    painCarousel.appendChild(card);
+  });
+}
+
+
+function selectPainScene(scene) {
+  selectedScene = scene.id;
+  selectedResultType = scene.resultType;
+
+  const allCards = document.querySelectorAll(".pain-card");
+
+  allCards.forEach((card) => {
+    card.classList.remove("selected");
+  });
+
+  const activeCard = document.querySelector(`.pain-card[data-id="${scene.id}"]`);
+  activeCard.classList.add("selected");
+
+  painNextBtn.disabled = false;
+  painNextBtn.textContent = "进入一抹净味体验";
+}
+
+
+/* ===================== 第三页：Scratch Card 擦除效果 ===================== */
+
+let ctx;
+let isDrawing = false;
+let scratchReady = false;
+
+function initScratchCanvas() {
+  const rect = scratchStage.getBoundingClientRect();
+
+  scratchCanvas.width = rect.width * window.devicePixelRatio;
+  scratchCanvas.height = rect.height * window.devicePixelRatio;
+
+  scratchCanvas.style.width = `${rect.width}px`;
+  scratchCanvas.style.height = `${rect.height}px`;
+
+  ctx = scratchCanvas.getContext("2d");
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  drawScratchMask(rect.width, rect.height);
+
+  cleanNextBtn.classList.add("hidden");
+  scratchGuide.classList.remove("hidden");
+  scratchReady = false;
+}
+
+
+function drawScratchMask(width, height) {
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+
+  gradient.addColorStop(0, "#404845");
+  gradient.addColorStop(0.5, "#737a75");
+  gradient.addColorStop(1, "#2f3633");
+
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
+  ctx.font = "700 18px Microsoft YaHei";
+  ctx.textAlign = "center";
+  ctx.fillText("擦拭屏幕，洗去暗淡气味", width / 2, height / 2 - 8);
+
+  ctx.font = "400 13px Microsoft YaHei";
+  ctx.fillText("先净味，再留香", width / 2, height / 2 + 24);
+}
+
+
+function getPointerPosition(event) {
+  const rect = scratchCanvas.getBoundingClientRect();
+
+  let clientX;
+  let clientY;
+
+  if (event.touches && event.touches.length > 0) {
+    clientX = event.touches[0].clientX;
+    clientY = event.touches[0].clientY;
+  } else {
+    clientX = event.clientX;
+    clientY = event.clientY;
+  }
+
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top
+  };
+}
+
+
+function scratch(event) {
+  if (!isDrawing) return;
+
+  event.preventDefault();
+
+  const pos = getPointerPosition(event);
+
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, 34, 0, Math.PI * 2);
+  ctx.fill();
+
+  checkScratchProgress();
+}
+
+
+function checkScratchProgress() {
+  if (scratchReady) return;
+
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    scratchCanvas.width,
+    scratchCanvas.height
+  );
+
+  const pixels = imageData.data;
+  let transparentCount = 0;
+
+  for (let i = 3; i < pixels.length; i += 4 * 24) {
+    if (pixels[i] < 20) {
+      transparentCount++;
+    }
+  }
+
+  const totalSample = pixels.length / (4 * 24);
+  const percent = transparentCount / totalSample;
+
+  if (percent > 0.42) {
+    scratchReady = true;
+    scratchGuide.classList.add("hidden");
+    cleanNextBtn.classList.remove("hidden");
+
+    ctx.clearRect(
+      0,
+      0,
+      scratchCanvas.width,
+      scratchCanvas.height
+    );
+  }
+}
+
+
+scratchCanvas.addEventListener("mousedown", (event) => {
+  isDrawing = true;
+  scratch(event);
+});
+
+scratchCanvas.addEventListener("mousemove", scratch);
+
+window.addEventListener("mouseup", () => {
+  isDrawing = false;
+});
+
+scratchCanvas.addEventListener("touchstart", (event) => {
+  isDrawing = true;
+  scratch(event);
+}, { passive: false });
+
+scratchCanvas.addEventListener("touchmove", scratch, { passive: false });
+
+window.addEventListener("touchend", () => {
+  isDrawing = false;
+});
+
+
+/* ===================== 第四页：人格结果数据 ===================== */
+
+const personalityResults = {
+  orchid: {
+    name: "白鸢尾型",
+    theme: "theme-orchid",
+    desc: "清冷、自律、精致。你像图书馆清晨的一束光，干净、克制，却自带高级感。适合在课堂、面试与汇报前，用自然香气整理好自己的状态。",
+    keywords: ["清冷感", "自律", "高级", "图书馆", "课堂汇报"]
+  },
+  magnolia: {
+    name: "白兰型",
+    theme: "theme-magnolia",
+    desc: "温柔、松弛、亲和。你更在意日常里的舒适感，喜欢干净床单、宿舍阳光和自然花香。你的衣物气味，是一种让人愿意靠近的柔软氛围。",
+    keywords: ["温柔", "松弛", "宿舍阳光", "亲和力", "干净床单"]
+  },
+  sandalwood: {
+    name: "檀木型",
+    theme: "theme-sandalwood",
+    desc: "沉静、稳定、有分寸感。你不喜欢过分张扬的气味，更偏爱干净、沉稳、自然的高级感。你的香气像一条安静的小路，让人觉得可靠而舒服。",
+    keywords: ["沉稳", "分寸感", "安静", "可靠", "换季收纳"]
+  },
+  grass: {
+    name: "草木型",
+    theme: "theme-grass",
+    desc: "清爽、运动、活力。你不怕奔跑和流汗，但希望汗味退场之后，留下草木一样的清新。你的气味关键词是自由、轻盈和重新启动。",
+    keywords: ["清爽", "活力", "运动", "青草气息", "重新启动"]
+  }
+};
+
+
+function renderResult() {
+  const result = personalityResults[selectedResultType];
+
+  resultName.textContent = result.name;
+  resultDesc.textContent = result.desc;
+
+  tarotCard.classList.remove(
+    "theme-orchid",
+    "theme-magnolia",
+    "theme-sandalwood",
+    "theme-grass"
+  );
+
+  tarotCard.classList.add(result.theme);
+
+  keywordOrbit.innerHTML = "";
+
+  result.keywords.forEach((word) => {
+    const span = document.createElement("span");
+    span.textContent = word;
+    keywordOrbit.appendChild(span);
+  });
+}
+
+
+/* ===================== 按钮事件 ===================== */
+
+openBtn.addEventListener("click", () => {
+  showPage(pagePain);
+});
+
+painNextBtn.addEventListener("click", () => {
+  showPage(pageCleanse);
+
+  setTimeout(() => {
+    initScratchCanvas();
+  }, 80);
+});
+
+cleanNextBtn.addEventListener("click", () => {
+  renderResult();
+  showPage(pageResult);
+});
+
+retestBtn.addEventListener("click", () => {
+  selectedScene = null;
+  selectedResultType = "grass";
+
+  painNextBtn.disabled = true;
+  painNextBtn.textContent = "先选一个气味场景";
+
+  const allCards = document.querySelectorAll(".pain-card");
+  allCards.forEach((card) => {
+    card.classList.remove("selected");
+  });
+
+  showPage(pagePain);
+});
+
+toConvertBtn.addEventListener("click", () => {
+  showPage(pageConvert);
+});
+
+couponBtn.addEventListener("click", () => {
+  alert("试香券已领取！可在策划案中将此处替换为真实二维码或活动链接。");
+});
+
+groupBtn.addEventListener("click", () => {
+  alert("宿舍拼团已发起！可在后续原型中接入表单或社群二维码。");
+});
+
+backStartBtn.addEventListener("click", () => {
+  selectedScene = null;
+  selectedResultType = "grass";
+
+  painNextBtn.disabled = true;
+  painNextBtn.textContent = "先选一个气味场景";
+
+  const allCards = document.querySelectorAll(".pain-card");
+  allCards.forEach((card) => {
+    card.classList.remove("selected");
+  });
+
+  showPage(pageAwake);
+});
+
+
+/* ===================== 初始化 ===================== */
+
+renderPainCards();
+
+window.addEventListener("resize", () => {
+  if (pageCleanse.classList.contains("active")) {
+    initScratchCanvas();
+  }
+});

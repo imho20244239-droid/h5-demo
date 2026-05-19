@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>你的校园气味人格是什么？</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- ========== 页面一：唤醒页 ========== -->
+    <section class="page page-awake active" id="pageAwake">
+      <div class="awake-content">
+        <p class="brand-pill">超能植愈香氛系列 · 校园植愈之旅</p>
+
+        <h1 class="main-title">
+          你的校园<br />
+          气味人格是什么？
+        </h1>
+
+        <p class="main-subtitle">
+          打开滚筒花园，测出属于你的校园香气名片。
+        </p>
+      </div>
+
+      <div class="drum-garden">
+        <div class="drum-shell">
+          <div class="drum-inner">
+            <span class="garden-leaf leaf-1"></span>
+            <span class="garden-leaf leaf-2"></span>
+            <span class="garden-flower flower-1"></span>
+            <span class="garden-flower flower-2"></span>
+            <span class="scent scent-1"></span>
+            <span class="scent scent-2"></span>
+            <span class="scent scent-3"></span>
+          </div>
+        </div>
+      </div>
+
+      <button class="glass-btn bottom-cta" id="openBtn">
+        开启植愈之旅
+      </button>
+    </section>
+
+
+    <!-- ========== 页面二：共鸣页 ========== -->
+    <section class="page page-pain" id="pagePain">
+      <div class="page-header dark">
+        <p class="section-label">STEP 01 · 气味共鸣</p>
+        <h2 class="section-title">你正被哪种气味困扰？</h2>
+        <p class="section-desc">
+          左右滑动卡片，选择此刻最想逃离的校园气味场景。
+        </p>
+      </div>
+
+      <div class="pain-carousel" id="painCarousel">
+        <!-- JS 动态生成横向卡片 -->
+      </div>
+
+      <div class="pain-hint">
+        <span>← 滑动选择 →</span>
+      </div>
+
+      <button class="primary-btn fixed-bottom" id="painNextBtn" disabled>
+        先选一个气味场景
+      </button>
+    </section>
+
+
+    <!-- ========== 页面三：体验页 ========== -->
+    <section class="page page-cleanse" id="pageCleanse">
+      <div class="page-header light">
+        <p class="section-label">STEP 02 · 一抹净味</p>
+        <h2 class="section-title">洗掉疲惫，穿上松弛</h2>
+        <p class="section-desc">
+          用手指擦拭屏幕，洗去暗淡气味，让植物香气绽放。
+        </p>
+      </div>
+
+      <div class="scratch-stage" id="scratchStage">
+        <div class="clean-visual" id="cleanVisual">
+          <div class="water-wave wave-1"></div>
+          <div class="water-wave wave-2"></div>
+          <span class="fresh-leaf fresh-1"></span>
+          <span class="fresh-leaf fresh-2"></span>
+          <span class="fresh-leaf fresh-3"></span>
+          <span class="fresh-drop fresh-drop-1"></span>
+          <span class="fresh-drop fresh-drop-2"></span>
+          <span class="fresh-drop fresh-drop-3"></span>
+          <p class="clean-copy">先净味，再留香</p>
+        </div>
+
+        <canvas id="scratchCanvas"></canvas>
+
+        <div class="scratch-guide" id="scratchGuide">
+          在这里擦一擦
+        </div>
+      </div>
+
+      <button class="primary-btn fixed-bottom hidden" id="cleanNextBtn">
+        生成我的气味人格名片
+      </button>
+    </section>
+
+
+    <!-- ========== 页面四：塑造页 ========== -->
+    <section class="page page-result" id="pageResult">
+      <div class="page-header light compact">
+        <p class="section-label">STEP 03 · 专属名片</p>
+        <h2 class="section-title">你的气味人格已生成</h2>
+      </div>
+
+      <article class="tarot-card" id="tarotCard">
+        <div class="card-topline">
+          <span>SCENT PERSONALITY</span>
+          <span>2026</span>
+        </div>
+
+        <div class="poster-plant" id="posterPlant">
+          <span class="poster-core"></span>
+          <span class="poster-ring"></span>
+          <span class="poster-dot dot-a"></span>
+          <span class="poster-dot dot-b"></span>
+          <span class="poster-dot dot-c"></span>
+        </div>
+
+        <p class="result-kicker">你的校园气味人格是</p>
+        <h2 class="result-name" id="resultName">草木型</h2>
+
+        <p class="result-desc" id="resultDesc">
+          清爽、运动、活力。你不怕奔跑和流汗，但希望汗味退场之后，留下草木一样的清新。
+        </p>
+
+        <div class="keyword-orbit" id="keywordOrbit">
+          <!-- JS 动态生成关键词 -->
+        </div>
+
+        <div class="poster-slogan">
+          把日常，洗成花园。
+        </div>
+      </article>
+
+      <div class="result-btn-group">
+        <button class="secondary-btn" id="retestBtn">重新测试</button>
+        <button class="primary-btn no-margin" id="toConvertBtn">领取我的宿舍花园</button>
+      </div>
+    </section>
+
+
+    <!-- ========== 页面五：转化页 ========== -->
+    <section class="page page-convert" id="pageConvert">
+      <div class="page-header light">
+        <p class="section-label">STEP 04 · 植愈落点</p>
+        <h2 class="section-title">领取你的宿舍花园</h2>
+        <p class="section-desc">
+          前往线下快闪点试香，或发起宿舍拼团，把花园带回宿舍。
+        </p>
+      </div>
+
+      <div class="dorm-miniature">
+        <div class="window-light"></div>
+        <div class="bed">
+          <span class="pillow"></span>
+          <span class="blanket"></span>
+        </div>
+        <div class="wardrobe"></div>
+        <div class="plant-pot pot-1"></div>
+        <div class="plant-pot pot-2"></div>
+        <div class="tiny-table"></div>
+        <span class="aura aura-1"></span>
+        <span class="aura aura-2"></span>
+      </div>
+
+      <div class="coupon-panel">
+        <div class="coupon-left">
+          <p class="coupon-title">校园植愈补给券</p>
+          <p class="coupon-desc">
+            可用于线下“一平米宿舍花园”快闪试香、小样领取与宿舍植愈装优惠。
+          </p>
+        </div>
+
+        <div class="qr-box">
+          QR
+        </div>
+      </div>
+
+      <div class="convert-actions">
+        <button class="primary-btn no-margin" id="couponBtn">
+          一键领取试香券
+        </button>
+
+        <button class="secondary-btn" id="groupBtn">
+          发起宿舍拼团
+        </button>
+      </div>
+
+      <button class="text-btn" id="backStartBtn">
+        返回入口页
+      </button>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
